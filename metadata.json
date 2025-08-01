@@ -1,0 +1,6 @@
+{
+  "name": "Dashboard de Matéria Legislativa",
+  "description": "Um painel interativo para visualizar e analisar dados de matérias legislativas, extraídos e categorizados de documentos oficiais usando a API Gemini.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
