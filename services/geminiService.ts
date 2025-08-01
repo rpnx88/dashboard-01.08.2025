@@ -15,8 +15,8 @@ const CATEGORIES = [
 ];
 
 const BASE_URL = 'https://sapl.camarabento.rs.gov.br';
-const URL_PAGE_1 = `${BASE_URL}/materia/pesquisar-materia?tipo=8&ementa=&numero=&numeracao__numero_materia=&numero_protocolo=&ano=2025&autoria__autor=400&autoria__primeiro_autor=unknown&autoria__autor__tipo=&autoria__autor__parlamentar_set__filiacao__partido=&o=&tipo_listagem=1`;
-const URL_PAGE_2 = `${BASE_URL}/materia/pesquisar-materia?page=2&tipo=8&ementa=&numero=&numeracao__numero_materia=&numero_protocolo=&ano=2025&autoria__autor=400&autoria__primeiro_autor=unknown&autoria__autor__tipo=&autoria__autor__parlamentar_set__filiacao__partido=&o=&tipo_listagem=1`;
+const URL_PAGE_1 = `${BASE_URL}/materia/pesquisar-materia?tipo=8&ementa=&numero=&numeracao__numero_materia=&numero_protocolo=&ano=2024&autoria__autor=400&autoria__primeiro_autor=unknown&autoria__autor__tipo=&autoria__autor__parlamentar_set__filiacao__partido=&o=&tipo_listagem=1`;
+const URL_PAGE_2 = `${BASE_URL}/materia/pesquisar-materia?page=2&tipo=8&ementa=&numero=&numeracao__numero_materia=&numero_protocolo=&ano=2024&autoria__autor=400&autoria__primeiro_autor=unknown&autoria__autor__tipo=&autoria__autor__parlamentar_set__filiacao__partido=&o=&tipo_listagem=1`;
 
 type RawProposal = Omit<Proposal, 'category' | 'status' | 'locations'>;
 
