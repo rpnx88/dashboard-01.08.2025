@@ -24,8 +24,11 @@ export default async function handler(req: any, res: any) {
     // Fetch the content from the target URL
     const response = await fetch(targetUrl.toString(), {
       headers: {
-        // It's good practice to mimic a real browser's User-Agent
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        // It's good practice to mimic a real browser's User-Agent and other headers
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Referer': 'https://sapl.camarabento.rs.gov.br/materia/pesquisar-materia',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
       },
     });
 
