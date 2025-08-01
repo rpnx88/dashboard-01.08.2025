@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from '@google/genai';
 import { Proposal } from '../types';
 
@@ -161,16 +160,29 @@ async function analyzeProposalDescription(description: string): Promise<{ catego
 
 export async function processLegislativeText(): Promise<Proposal[]> {
   let htmlPage1: string;
-  let htmlPage2: string;
+  let htmlPage2 = ''; // Initialize as empty string
 
   try {
-      [htmlPage1, htmlPage2] = await Promise.all([
-          fetchViaProxy(URL_PAGE_1),
-          fetchViaProxy(URL_PAGE_2)
-      ]);
-  } catch(error) {
-      console.error("Error fetching legislative pages:", error);
-      throw new Error(`Falha ao carregar dados do portal da câmara. O serviço pode estar temporariamente indisponível. Detalhes: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    // Fetch the first page, which is mandatory.
+    htmlPage1 = await fetchViaProxy(URL_PAGE_1);
+  } catch (error) {
+    console.error("Error fetching the primary legislative page:", error);
+    // If the first page fails, we cannot proceed.
+    throw new Error(`Falha ao carregar dados principais do portal da câmara. O serviço pode estar indisponível. Detalhes: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+  }
+
+  try {
+    // Attempt to fetch the second page. If it fails, we'll continue with just the first page.
+    htmlPage2 = await fetchViaProxy(URL_PAGE_2);
+  } catch (error: any) {
+    // A 404 error on the second page is expected if there are not enough results.
+    // We log a warning and continue without it. For other errors, we also warn but don't halt execution.
+    if (error.message && error.message.includes('404 Not Found')) {
+      console.warn("Segunda página de resultados não encontrada (404). Isso é esperado se houver poucos resultados. Continuando com a primeira página.");
+    } else {
+      console.warn(`Não foi possível carregar a segunda página de resultados. Continuando apenas com a primeira. Erro: ${error.message}`);
+    }
+    // htmlPage2 remains an empty string, which is handled by the parser.
   }
 
   const rawProposalsPage1 = parseHtmlForProposals(htmlPage1, BASE_URL);
