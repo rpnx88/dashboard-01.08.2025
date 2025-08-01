@@ -117,7 +117,6 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -139,34 +138,21 @@ const App: React.FC = () => {
 
   const handleBarClick = useCallback((payload: any) => {
     if (payload && payload.name) {
-      setSelectedCategory(prev => (prev === payload.name ? null : payload.name));
+      setSelectedCategory(prev => (prev === payload.name ? null : prev));
       listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, []);
   
-  const handleClearFilters = useCallback(() => {
+  const handleClearFilter = useCallback(() => {
     setSelectedCategory(null);
-    setSearchTerm('');
   }, []);
 
   const filteredProposals = useMemo(() => {
-    let tempProposals = proposals;
-
-    if (selectedCategory) {
-      tempProposals = tempProposals.filter(p => p.category === selectedCategory);
+    if (!selectedCategory) {
+      return proposals;
     }
-    
-    if (searchTerm) {
-      const lowercasedTerm = searchTerm.toLowerCase();
-      tempProposals = tempProposals.filter(p =>
-        p.title.toLowerCase().includes(lowercasedTerm) ||
-        p.description.toLowerCase().includes(lowercasedTerm) ||
-        (p.locations && p.locations.some(l => l.toLowerCase().includes(lowercasedTerm)))
-      );
-    }
-
-    return tempProposals;
-  }, [proposals, selectedCategory, searchTerm]);
+    return proposals.filter(p => p.category === selectedCategory);
+  }, [proposals, selectedCategory]);
 
   const categoryData: CategoryData[] = useMemo(() => {
     const totalCount = proposals.length;
@@ -193,8 +179,6 @@ const App: React.FC = () => {
 
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorDisplay message={error} />;
-  
-  const hasActiveFilters = selectedCategory || searchTerm;
 
   return (
     <div className="min-h-screen bg-slate-900 text-gray-200 p-4 sm:p-6 lg:p-8 animate-fade-in">
@@ -203,7 +187,7 @@ const App: React.FC = () => {
           Dashboard Legislativo
         </h1>
         <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-          Análise interativa das indicações legislativas do vereador Rafael Fantin (PSD) na Câmara de Bento Gonçalves, RS, em 2024.
+          Análise interativa das indicações legislativas do Vereador Postal na Câmara de Bento Gonçalves, RS, em 2024.
         </p>
       </header>
 
@@ -250,29 +234,24 @@ const App: React.FC = () => {
         </section>
 
         <section className="flex flex-col animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-          <div className="mb-4">
-              <input
-                type="text"
-                placeholder="Pesquisar por título, descrição ou local..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                aria-label="Pesquisar propostas"
-              />
-              {hasActiveFilters && (
-                <div className="mt-3 flex items-center justify-between">
+          <div className="mb-4 h-14 flex items-center">
+              {selectedCategory ? (
+                <div className="flex items-center justify-between w-full">
                     <div className="text-sm text-gray-400">
-                      {filteredProposals.length} resultado(s) encontrado(s).
-                      {selectedCategory && <span className="ml-2 bg-blue-900 text-blue-300 text-xs font-semibold px-2.5 py-0.5 rounded-full">{selectedCategory}</span>}
+                      Filtrando por:
+                      <span className="ml-2 bg-blue-900 text-blue-300 text-xs font-semibold px-2.5 py-1 rounded-full">{selectedCategory}</span>
+                      <span className="ml-2">({filteredProposals.length} resultados)</span>
                     </div>
                     <button
-                        onClick={handleClearFilters}
+                        onClick={handleClearFilter}
                         className="text-sm text-blue-400 hover:text-blue-300 hover:underline"
                     >
-                        Limpar filtros
+                        Limpar filtro
                     </button>
                 </div>
-            )}
+              ) : (
+                <h2 className="text-2xl font-bold text-white">Todas as Propostas ({proposals.length})</h2>
+              )}
           </div>
           <div ref={listRef} className="flex-1 bg-slate-800/50 p-4 rounded-xl shadow-inner overflow-y-auto space-y-4" style={{maxHeight: '70vh'}} role="feed">
               {filteredProposals.length > 0 ? (
@@ -282,7 +261,7 @@ const App: React.FC = () => {
               ) : (
                   <div className="text-center py-10 text-gray-500">
                       <p className="text-lg">Nenhuma proposta encontrada.</p>
-                      <p>Tente ajustar seus filtros de busca.</p>
+                      {selectedCategory && <p>Tente limpar a seleção de categoria.</p>}
                   </div>
               )}
           </div>
@@ -295,3 +274,5 @@ const App: React.FC = () => {
     </div>
   );
 };
+
+export default App;
