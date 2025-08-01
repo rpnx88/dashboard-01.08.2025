@@ -203,7 +203,7 @@ const App: React.FC = () => {
           Dashboard Legislativo
         </h1>
         <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-          Análise interativa das indicações legislativas do vereador Rafael Fantin (PSD) na Câmara de Bento Gonçalves, RS, em 2025.
+          Análise interativa das indicações legislativas do vereador Rafael Fantin (PSD) na Câmara de Bento Gonçalves, RS, em 2024.
         </p>
       </header>
 
@@ -295,5 +295,3 @@ const App: React.FC = () => {
     </div>
   );
 };
-
-export default App;
